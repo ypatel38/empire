@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Empire</title>
+    <link rel="stylesheet" href="/assets/index.css">
+    <link href="https://fonts.googleapis.com/css?family=Roboto:100,300,400,500,700,900" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/@mdi/font@4.x/css/materialdesignicons.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.min.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no, minimal-ui">
+  </head>
+  <body>
+    <div id="app">
+      <v-app>
+        <div id="form-container" class="d-flex flex-column justify-center ma-auto">
+          <h1 class="mb-4 text-center">Welcome to <span class="primary--text">Empire</span></h1>
+          <v-card class="px-4 pt-4 pb-2">
+            <p class="mb-4"><span class="font-weight-bold secondary--text">Create</span> or <span class="font-weight-bold primary--text">Join</span> a game:</p>
+            <v-text-field
+              ref="name"
+              v-model="name"
+              label="Display Name"
+              dense
+              outlined
+              :rules="[() => !!name || 'This field is required']"
+            ></v-text-field>
+            <v-divider class="mb-6"></v-divider>
+            <v-text-field
+              ref="room"
+              v-model="room"
+              label="Room Name"
+              dense
+              outlined
+              :rules="[() => !!room || 'This field is required']"
+            ></v-text-field>
+            <v-text-field
+              ref="password"
+              v-model="password"
+              :append-icon="showPass ? 'mdi-eye' : 'mdi-eye-off'"
+              :type="showPass ? 'text' : 'password'"
+              label="Room Password"
+              dense
+              outlined
+              :rules="[() => !!password || 'This field is required']"
+              @click:append="showPass = !showPass"
+            ></v-text-field>
+            <v-row>
+              <v-col cols="6">
+                <v-btn @click="createGame" block color="secondary" depressed>Create Game</v-btn>
+              </v-col>
+              <v-col cols="6">
+                <v-btn @click="joinGame" block color="primary" depressed>Join Game</v-btn>
+              </v-col>
+            </v-row>
+            <div v-if="serverErrorMessage !== ''">
+              <v-divider class="my-4"></v-divider>
+              <div class="font-weight-medium error--text fill-width text-center mb-4">{{ serverErrorMessage }}</div>
+            </div>
+          </v-card>
+        </div>
+      </v-app>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script>
+      Vue.prototype.$axios = this.axios
+      var app = new Vue({
+        el: '#app',
+        vuetify: new Vuetify({
+          theme: {
+            themes: {
+              light: {
+                primary: '#51996d',
+                secondary: '#231331',
+                error: '#a63232'
+              },
+            },
+          },
+        }),
+        data: {
+          name: '',
+          room: '',
+          password: '',
+          showPass: false,
+          serverErrorMessage: ''
+        },
+        computed: {
+          form() {
+            return {
+              name: this.name,
+              room: this.room,
+              password: this.password
+            }
+          },
+          formHasErrors() {
+            var formHasErrors = false
+
+            Object.keys(this.form).forEach(entry => {
+              if (!this.form[entry]) {
+                formHasErrors = true
+              }
+
+              this.$refs[entry].validate(true)
+            })
+
+            return formHasErrors
+          }
+        },
+        methods: {
+          createGame: async function() {
+            
+            if (!this.formHasErrors) {
+              var resp = await this.$axios.post('/create-game', {
+                name: this.name,
+                room: this.room,
+                password: this.password
+              })
+
+              if (resp.data.error) {
+                this.serverErrorMessage = resp.data.error
+
+                if (resp.data.error.includes('display')) {
+                  this.name = ''
+                } else if (resp.data.error.includes('room')) {
+                  this.room = ''
+                }
+              } else {
+                window.location.href = `/${resp.data.gameId}`
+              }
+            }
+          },
+          joinGame: async function() {
+            if (!this.formHasErrors) {
+              var resp = await this.$axios.post('/join-game', {
+                name: this.name,
+                room: this.room,
+                password: this.password
+              })
+
+              if (resp.data.error) {
+                this.serverErrorMessage = resp.data.error
+
+                if (resp.data.error.includes('display')) {
+                  this.name = ''
+                } else if (resp.data.error.includes('room')) {
+                  this.room = ''
+                  this.password = ''
+                }
+              } else {
+                window.location.href = `/${resp.data.gameId}`
+              }
+            }
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
