@@ -1,0 +1,25 @@
+Game:
+Id: varchar
+StartTime: utc time/string
+Turn Number: Int
+Num Players: Int
+Num Empires: Int  (reduce when someone joins another team)
+HostPlayer ID: varchar (UUID)
+Password: varchar
+name: varchar
+gamePhase: varchar (waiting for players, deciding topic, submitting answers, actual game)
+
+
+Game<->Player:
+Id: varcahr
+PlayerID: varchar (UUID)
+
+Player:
+TeamNumber: int
+isLeader: boolean
+name: varchar
+value: varchar
+
+
+to get current turn get all players that are leaders and sort by team number; index that array witht he turn number
+Increment the turn number by getting the length of the number of leaders
