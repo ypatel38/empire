@@ -14,11 +14,11 @@
       <v-app>
         <div>
           <v-row class="align-center">
-            <v-col cols="3" class="text-center">
+            <v-col cols="12" sm="3" class="text-center">
               <div><span class="primary--text font-weight-bold">Room: </span>hello</div>
               <div><span class="secondary--text font-weight-bold">Password: </span>123</div>
             </v-col>
-            <v-col cols="6"> 
+            <v-col cols="12" sm="6"> 
               <div v-if="topic === ''">
                 <v-text-field
                   v-if="isHost"
@@ -41,7 +41,7 @@
                 <div class="display-topic secondary--text body-1">{{ topic }}</div>
               </div>
             </v-col>
-            <v-col cols="3" class="text-center primary--text font-weight-bold">
+            <v-col cols="12" sm="3" class="text-center primary--text font-weight-bold">
               <div>John Smith<span v-if="isHost && waitingForPlayers" class="secondary--text font-weight-regular"> (Host)</span></div>
             </v-col>
           </v-row>
@@ -50,7 +50,7 @@
         <div id="waiting-for-players" v-if="waitingForPlayers">
           <div class="font-weight-bold secondary--text display-1 text-center mt-6 mb-10">Lobby</div>
           <div class="d-flex justify-center flex-wrap mb-12">
-            <div v-for="(person, index) in players" class="d-flex flex-row align-center mr-8 my-4">
+            <div v-for="(person, index) in players" class="d-flex flex-row align-center mr-8 my-4" :key="index">
               <v-icon x-large :color="(index % 2 === 0) ? 'primary' : 'secondary'" class="mx-3">fas fa-user</v-icon>
               <div>{{ person.name }}</div>
             </div>
@@ -63,7 +63,13 @@
           </div>
         </div>
         <div id="reading-answers" v-if="readingAnswers">
-
+          <v-card class="ma-10 pa-6 text-center">
+            <v-row class="align-center">
+              <v-col cols="1" class="font-weight-bold primary--text display-1">{{ currentDisplayedIndex }}</v-col>
+              <v-col cols="10" class="font-weight-bold secondary--text display-1">{{ currentDisplayedAnswer }}</v-col>
+              <v-spacer></v-spacer>
+            </v-row>
+          </v-card>
         </div>
         <div id="in-game" v-if="inGame">
 
@@ -89,8 +95,8 @@
           },
         }),
         data: {
-          waitingForPlayers: true,
-          readingAnswers: false,
+          waitingForPlayers: false,
+          readingAnswers: true,
           inGame: false,
           isHost: false,
           tempTopic: '',
@@ -140,12 +146,70 @@
               name: 'Jesus2',
               teamId: 3
             }
-          ]
+          ],
+          answers: ['a', 'b', 'c', 'd', 'e', 'f',],
+          currentDisplayedIndex: 1,
+          currentDisplayedAnswer: ''
         },
         methods: {
           editTopic: function () {
             this.tempTopic = this.topic
             this.topic = ''
+          },
+          loopAnswers: async function () {
+            const sleep = milliseconds => {
+              return new Promise(resolve => setTimeout(resolve, milliseconds))
+            }
+            const shuffle = (array) => {
+              var currentIndex = array.length
+              var temporaryValue
+              var randomIndex
+
+              // While there remain elements to shuffle...
+              while (0 !== currentIndex) {
+
+                // Pick a remaining element...
+                randomIndex = Math.floor(Math.random() * currentIndex)
+                currentIndex -= 1
+
+                // And swap it with the current element.
+                temporaryValue = array[currentIndex]
+                array[currentIndex] = array[randomIndex]
+                array[randomIndex] = temporaryValue
+              }
+
+              return array
+            }
+
+            /* First run */
+            this.currentDisplayedIndex = ''
+            this.currentDisplayedAnswer = 'The words will be displayed twice in a random order. Slowly at first, quicker the second time.'
+
+            await sleep(3000)
+
+            this.currentDisplayedAnswer = 'Lets begin!'
+
+            await sleep(1000)
+
+            var shuffledAnswers = shuffle(this.answers)
+            for (var i = 0; i < shuffledAnswers.length; i++) {
+              this.currentDisplayedIndex = i + 1
+              this.currentDisplayedAnswer = shuffledAnswers[i]
+              await sleep(3000)
+            }
+
+            /* Second run */
+            this.currentDisplayedIndex = ''
+            this.currentDisplayedAnswer = 'Once more...'
+
+            await sleep(3000)
+
+            shuffledAnswers = shuffle(this.answers)
+            for (var i = 0; i < shuffledAnswers.length; i++) {
+              this.currentDisplayedIndex = i + 1
+              this.currentDisplayedAnswer = shuffledAnswers[i]
+              await sleep(3000)
+            }
           }
           // sendCreateGame: function () {
           //   socket.emit('message', this.message);
@@ -162,6 +226,7 @@
           socket = io();
         },
         mounted: function () {
+          this.loopAnswers()
           // socket.on('message', function (message) {
           //   app.messages.push(message);
           //   // this needs to be done AFTER vue updates the page!!
