@@ -15,8 +15,8 @@
         <div>
           <v-row class="align-center">
             <v-col cols="12" sm="3" class="text-center">
-              <div><span class="primary--text font-weight-bold">Room: </span>hello</div>
-              <div><span class="secondary--text font-weight-bold">Password: </span>123</div>
+              <div><span class="primary--text font-weight-bold">Room: </span>{{ roomName }}</div>
+              <div><span class="secondary--text font-weight-bold">Password: </span>{{ roomPassword }}</div>
             </v-col>
             <v-col cols="12" sm="6"> 
               <div v-if="topic === ''">
@@ -33,16 +33,16 @@
                   Waiting for host to select at topic <v-icon class="ml-2" color="secondary">fas fa-spinner fa-spin</v-icon>
                 </div>
               </div>
-              <div v-else class="my-4">
+              <div v-else class="ma-4">
                 <div class="d-flex justify-space-between align-center mb-4">
                   <div class="secondary--text font-weight-bold">Topic:</div>
-                  <v-btn v-if="isHost" small color="primary" @click="editTopic">Edit Topic</v-btn>
+                  <v-btn v-if="isHost && waitingForPlayers" small color="primary" @click="editTopic">Edit Topic</v-btn>
                 </div>
                 <div class="display-topic secondary--text body-1">{{ topic }}</div>
               </div>
             </v-col>
             <v-col cols="12" sm="3" class="text-center primary--text font-weight-bold">
-              <div>John Smith<span v-if="isHost && waitingForPlayers" class="secondary--text font-weight-regular"> (Host)</span></div>
+              <div>{{ myName }}<span v-if="isHost" class="secondary--text font-weight-regular"> (Host)</span></div>
             </v-col>
           </v-row>
           <v-divider class="mx-10"></v-divider>
@@ -80,8 +80,10 @@
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vue@2.x/dist/vue.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/vuetify@2.x/dist/vuetify.js"></script>
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <script>
       var socket = null;
+      Vue.prototype.$axios = this.axios
       var app = new Vue({
         el: '#app',
         vuetify: new Vuetify({
@@ -95,12 +97,17 @@
           },
         }),
         data: {
+          couldNotJoinGame: false,
           waitingForPlayers: false,
-          readingAnswers: true,
+          readingAnswers: false,
           inGame: false,
           isHost: false,
+          myName: '',
+          roomName: '',
+          roomPassword: '',
+          myAnswer: '',
           tempTopic: '',
-          topic: '',
+          topic: 'asdasd',
           players: [
             {
               name: 'Yogi',
@@ -147,14 +154,66 @@
               teamId: 3
             }
           ],
-          answers: ['a', 'b', 'c', 'd', 'e', 'f',],
+          answers: [],
           currentDisplayedIndex: 1,
           currentDisplayedAnswer: ''
+        },
+        computed: {
+          getCookie() {
+            return function(cname) {
+              var name = cname + "=";
+              var decodedCookie = decodeURIComponent(document.cookie);  
+              var ca = decodedCookie.split(';');
+              for(var i = 0; i<ca.length; i++) {
+                var c = ca[i];
+                while (c.charAt(0) == ' ') {
+                  c = c.substring(1);
+                }
+                if (c.indexOf(name) == 0) {
+                  return c.substring(name.length, c.length);
+                }
+              }
+              return "";
+            }
+          }
         },
         methods: {
           editTopic: function () {
             this.tempTopic = this.topic
             this.topic = ''
+          },
+          load: async function (playerId) {
+            // call server for state, if fails cant join game, if succeeds then play game
+            try {
+              var resp = await this.$axios.get('/api/get-game-state', {
+                playerId: playerId,
+                room: window.location.pathname.substring(1)
+              })
+              const data = resp.data
+              switch (data.gameState) {
+                case 'waitingForPlayers':
+                  this.waitingForPlayers = true
+                  break;
+                case 'readingAnswers':
+                  this.readingAnswers = true
+                  break;
+                case 'inGame':
+                  this.inGame = true
+                  break;
+                default:
+                  this.couldNotJoinGame = true
+              }
+              this.topic = data.topic || ''
+              this.players = data.players || []
+              this.answers = data.answers || []
+              this.isHost = data.isHost
+              this.myAnswer = data.myAnswer || ''
+              this.myName = data.myName
+              this.roomName = data.roomName
+              this.roomPassword = data.roomPassword
+            } catch(e) {
+              couldNotJoinGame = true
+            }
           },
           loopAnswers: async function () {
             const sleep = milliseconds => {
@@ -189,7 +248,7 @@
 
             this.currentDisplayedAnswer = 'Lets begin!'
 
-            await sleep(1000)
+            await sleep(2000)
 
             var shuffledAnswers = shuffle(this.answers)
             for (var i = 0; i < shuffledAnswers.length; i++) {
@@ -210,23 +269,26 @@
               this.currentDisplayedAnswer = shuffledAnswers[i]
               await sleep(3000)
             }
-          }
+
+            this.answers = []
+            this.readingAnswers = false
+            this.inGame = true
+          },
           // sendCreateGame: function () {
           //   socket.emit('message', this.message);
           //   this.message = '';
           // },
-          // sendJoinGame: function () {
-          //   socket.emit('join', {
-          //     name: this.name,
-          //     room
-          //   });
-          // }
         },
         created: function () {
           socket = io();
         },
-        mounted: function () {
-          this.loopAnswers()
+        mounted: async function () {
+          await this.load(this.getCookie('playerId'))
+          this.$nextTick(async () => {
+            if (this.readingAnswers) {
+              await this.loopAnswers()
+            }
+          })
           // socket.on('message', function (message) {
           //   app.messages.push(message);
           //   // this needs to be done AFTER vue updates the page!!

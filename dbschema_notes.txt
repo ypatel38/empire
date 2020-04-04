@@ -19,6 +19,7 @@ TeamNumber: int
 isLeader: boolean
 name: varchar
 value: varchar
+playerId: varchar (UUID)
 
 
 to get current turn get all players that are leaders and sort by team number; index that array witht he turn number

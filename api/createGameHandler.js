@@ -6,7 +6,7 @@ class CreateGameHandler {
     const roomName = req.body.room
     const roomPassword = req.body.password
 
-    res.status(200).send({ gameId: 'hello' })
+    res.status(200).send({ gameId: 'hello', playerId: 'someId' })
   }
 }
   

@@ -30,8 +30,9 @@ app.use('/assets', express.static(__dirname + '/assets'))
 
 app.get('/', homeHandler.home.bind(homeHandler))
 app.get('/:game', gameHandler.game.bind(gameHandler))
-app.post('/create-game', createGameHandler.createGame.bind(createGameHandler))
-app.post('/join-game', joinGameHandler.joinGame.bind(joinGameHandler))
+app.post('/api/create-game', createGameHandler.createGame.bind(createGameHandler))
+app.post('/api/join-game', joinGameHandler.joinGame.bind(joinGameHandler))
+app.get('/api/get-game-state', gameHandler.getGameState.bind(gameHandler) )
 
 io.on('connection', (socket) => {
   socket.username = 'anonymous';
