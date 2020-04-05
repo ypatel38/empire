@@ -86,16 +86,12 @@ const Player = sequelize.define('player', {
 
 const HomeHandler = require('./api/homeHandler.js')
 const GameHandler = require('./api/gameHandler.js')
-console.log('before require cgh')
 const CreateGameHandler = require('./api/createGameHandler.js')
-console.log('after require cgh')
 const JoinGameHandler = require('./api/joinGameHandler.js')
 
 const homeHandler = new HomeHandler(__dirname)
 const gameHandler = new GameHandler(__dirname)
-console.log('before new cgh: ', Game)
 const createGameHandler = new CreateGameHandler(sequelize, Sequelize, Game, Player)
-console.log('after new cgh')
 const joinGameHandler = new JoinGameHandler()
 
 server.listen(port, () => console.log('Listening on port ', port))

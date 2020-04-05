@@ -1,19 +1,8 @@
 class CreateGameHandler {
   constructor(sequelize, Sequelize, Game, Player) { 
-    // "use strict"
-
-    console.log('og: ', Game)
-
     this.sequelize = sequelize
-    this.Game = Game  // constructor not working??
+    this.Game = Game
     this.Player = Player
-
-    // if (this instanceof CreateGameHandler) {
-    //   this.sequelize = sequelize
-    //   this.Game = Game  // constructor not working??
-    //   this.Player = Player
-    // }
-    // else return new CreateGameHandler(sequelize, Sequelize, Game, Player);
 
   }
 
@@ -27,7 +16,25 @@ class CreateGameHandler {
     console.log(userName, roomName, roomPassword)
     // console.log(this.sequelize)
     
-    
+    // check if gameName already exists
+    this.sequelize.sync().then(
+      this.Game.findAll({ where: {GameName: roomName} }).then(function(game) {
+        console.log('found gameNamde?: ',game.length)
+
+        // if gameName already exists, send error code
+        if(game.length > 0) {
+          res.status(500).send('roomName already in use')
+        }
+        else { // gameName is unique
+          // add game to Game table with player as host
+          
+
+          // add player as host to Player table
+
+          res.status(200).send({ gameId: 'hello' })
+        }
+      })
+    );
 
     // TOY CASES:
     // console.log(this.Game.length)
@@ -44,9 +51,6 @@ class CreateGameHandler {
     //   })
     // );
 
-
-
-    res.status(200).send({ gameId: 'hello' })
     
   }
 }
@@ -54,47 +58,5 @@ class CreateGameHandler {
   
 module.exports = CreateGameHandler
 
- // // define models
-    // this.Game = sequelize.define('game', {
-    //   GameName: { 
-    //     type: Sequelize.STRING, 
-    //     allowNull: false,
-    //     unique: true
-    //   }, 
-    //   GamePassword: Sequelize.STRING,
-    //   GamePhase: {
-    //     type: Sequelize.INTEGER, 
-    //     defaultValue: 0
-    //   },
-    //   TurnNumber: {
-    //     type: Sequelize.INTEGER,
-    //     defaultValue: 0
-    //   },
-    //   NumPlayers: {
-    //     type: Sequelize.INTEGER,
-    //     defaultValue: 1
-    //   },
-    //   NumEmpires: Sequelize.INTEGER,
-    //   HostPlayerId: Sequelize.STRING
-    // });
-
-
-    // this.Player = sequelize.define('player', {
-    //   PlayerId: {
-    //     type: Sequelize.UUID,
-    //     allowNull: false,
-    //     unique: true
-    //   },
-    //   PlayerName: {
-    //     type: Sequelize.STRING, 
-    //     allowNull: false,
-    //   }, 
-    //   GameName: {
-    //     type: Sequelize.STRING, 
-    //     allowNull: false
-    //   },
-    //   TeamNumber: Sequelize.INTEGER,
-    //   isLeader: Sequelize.BOOLEAN, 
-    // });
 
     
