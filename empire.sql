@@ -1,2 +1,2 @@
-SELECT * FROM games
-SELECT * FROM players
+SELECT * FROM games;
+SELECT * FROM players;

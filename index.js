@@ -78,7 +78,7 @@ const Player = sequelize.define('player', {
 //     TeamNumber: 0,
 //     isLeader: true
 //   })
-// })
+// }) 
 
 
 // const Db = require('./database.js') // this guy isnt doing anything
@@ -93,8 +93,8 @@ const JoinGameHandler = require('./api/joinGameHandler.js')
 
 const homeHandler = new HomeHandler(__dirname)
 const gameHandler = new GameHandler(__dirname)
-console.log('before new cgh')
-const createGameHandler = new CreateGameHandler(sequelize)
+console.log('before new cgh: ', Game)
+const createGameHandler = new CreateGameHandler(sequelize, Sequelize, Game, Player)
 console.log('after new cgh')
 const joinGameHandler = new JoinGameHandler()
 
