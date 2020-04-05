@@ -107,12 +107,20 @@
             return formHasErrors
           }
         },
+        computed: {
+          redirectToGame() {
+            return function(playerId, gameId) {
+              document.cookie = `playerId=${playerId}`
+              window.location.href = `/${gameId}`
+              
+            }
+          }
+        },
         methods: {
-          createGame: async function() {
-            
+          createGame: async function() {     
             if (!this.formHasErrors) {
-              var resp = await this.$axios.post('/create-game', {
-                name: this.name,
+              var resp = await this.$axios.post('/api/create-game', {
+                userName: this.name,
                 room: this.room,
                 password: this.password
               })
@@ -126,13 +134,13 @@
                   this.room = ''
                 }
               } else {
-                window.location.href = `/${resp.data.gameId}`
+                this.redirectToGame(resp.data.playerId, resp.data.gameId)
               }
             }
           },
           joinGame: async function() {
             if (!this.formHasErrors) {
-              var resp = await this.$axios.post('/join-game', {
+              var resp = await this.$axios.post('/api/join-game', {
                 name: this.name,
                 room: this.room,
                 password: this.password
@@ -148,7 +156,7 @@
                   this.password = ''
                 }
               } else {
-                window.location.href = `/${resp.data.gameId}`
+                this.redirectToGame(resp.data.playerId, resp.data.gameId)
               }
             }
           }

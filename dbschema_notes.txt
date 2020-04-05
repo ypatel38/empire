@@ -1,26 +1,25 @@
-Game: 
-GameId: Int PRIMARY
-StartTime: varchar -(convert to)->utc time/string
-TurnNumber: Int
-NumPlayers: Int
-NumEmpires: Int  (reduce when someone joins another team)
-HostPlayerId: varchar (UUID)
-GamePassword: varchar
-GameName: varchar
-GamePhase: Int (0: waiting for players, 1: reading answers, 2: end_game)
+Game:
+Id: varchar
+StartTime: utc time/string
+Turn Number: Int
+Num Players: Int
+Num Empires: Int  (reduce when someone joins another team)
+HostPlayer ID: varchar (UUID)
+Password: varchar
+name: varchar
+gamePhase: varchar (waiting for players, deciding topic, submitting answers, actual game)
 
 
 Game<->Player:
-GameId: Int
-PlayerId: varchar (UUID)
+Id: varcahr
+PlayerID: varchar (UUID)
 
 Player:
-PlayerId: varchar (UUID) PRIMARY
-GameId: Int FOREIGN
 TeamNumber: int
-isLeader: INTEGER (0: false, 1: true)
-PlayerName: varchar
-
+isLeader: boolean
+name: varchar
+value: varchar
+playerId: varchar (UUID)
 
 
 to get current turn get all players that are leaders and sort by team number; index that array witht he turn number
