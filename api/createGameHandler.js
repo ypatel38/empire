@@ -2,7 +2,7 @@ class CreateGameHandler {
   constructor() { }
 
   createGame(req, res) {
-    const user = req.body.user
+    const userName = req.body.userName
     const roomName = req.body.room
     const roomPassword = req.body.password
 

@@ -120,7 +120,7 @@
           createGame: async function() {     
             if (!this.formHasErrors) {
               var resp = await this.$axios.post('/api/create-game', {
-                name: this.name,
+                userName: this.name,
                 room: this.room,
                 password: this.password
               })
