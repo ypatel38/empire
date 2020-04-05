@@ -1,41 +1,45 @@
+
 class Database {
-  constructor(orm) {
-    this.orm = new orm({
-      dialect: 'sqlite',
-      storage: './database.sqlite'
-    });
+  constructor() {
   }
 }
 
+/////// all of this has to be in index. 
 
-const sqlite3 = require('sqlite3').verbose();  // set to verbose for stack traces. change if it gets annoying
+// const { Sequelize, Model, DataTypes } = require('sequelize');
+// const sequelize = new Sequelize({
+//   dialect: 'sqlite',
+//   storage: './empire.sqlite',
+//   logging: console.log, 
+//   freezeTableName: true
+// });
 
-let db = new sqlite3.Database('./empire.db', (err) => {
-  if (err) {
-    return console.error(err.message);
-  }
-  console.log('Connected to the in-memory SQlite database.');
-});
+// // define models
+// const Game = sequelize.define('game', {
+//   GameName: Sequelize.STRING
+// });
+
+// // how to add to Game table
+// // sequelize.sync().then(function () {
+// //   Game.create({
+// //     GameName: 'game0'
+// //   })
+// // })
+
+// how to find a game in Game table by id
+// sequelize.sync().then(function () {
+//   Game.findByPk(1).then(function(game) {
+//     console.log(game.dataValues)
+//   });
+// });
+
+// how to get all records in Game table
+// sequelize.sync().then(function () {
+//   Game.findAll().then(function(game) {
+//     console.log(game.length)
+//   });
+// });
 
 
-console.log("GOT THROUGH MAKING DATABASE")
 
-// let create_game_table = "CREATE TABLE IF NOT EXISTS game ( Game_ID INTEGER NOT NULL PRIMARY KEY, )";
-// let create_game_table = "CREATE TABLE IF NOT EXISTS game ( GameId INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT," + 
-// " StartTime TEXT, TurnNumber INTEGER, NumPlayers INTEGER, NumEmpires INTEGER, HostPlayerId TEXT, Password TEXT, Name TEXT,GamePhase INTEGER)";
-// db.run(create_game_table);
-
-
-
-
-/*
-// close database connection down
-db.close((err) => {
-  if (err) {
-    return console.error(err.message);
-  }
-  console.log('Close the database connection.');
-}); 
-*/
-
-module.exports = Database
+module.exports = sequelize
