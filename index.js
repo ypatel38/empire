@@ -12,9 +12,9 @@ const Db = require('./database.js')
 const db = new Db(Sequelize)
 
 const HomeHandler = require('./api/homeHandler.js')
-const GameHandler = require('./api/GameHandler.js')
-const CreateGameHandler = require('./api/CreateGameHandler.js')
-const JoinGameHandler = require('./api/JoinGameHandler.js')
+const GameHandler = require('./api/gameHandler.js')
+const CreateGameHandler = require('./api/createGameHandler.js')
+const JoinGameHandler = require('./api/joinGameHandler.js')
 
 const homeHandler = new HomeHandler(__dirname)
 const gameHandler = new GameHandler(__dirname)
