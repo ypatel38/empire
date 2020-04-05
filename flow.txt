@@ -1,0 +1,28 @@
+FLOW:
+
+1. Website opens
+2a. Create game button pressed
+	FRONTEND NEEDS TO:
+		send GameId(?), StartTime, HostPlayerId(?), GamePassword, GameName, PlayerName
+        (?) ids easier to make in frontend or backend?
+    BACKEND NEEDS TO:
+        1. check if GameName already exists
+                if it already exists, return -1
+                else, store data in game table and add player to player table
+
+
+2b. Join game button pressed
+    FRONTEND NEEDS TO:
+        send PlayerId(?), GameName, TeamNumber, isLeader, PlayerName
+    BACKEND NEEDS TO:
+        look up GameName
+            if it exists, add given data to player table and return 1
+            else, return -1
+    FRONTEND NEEDS TO:
+        check for return value and display message/ screen accordingly
+        
+    
+
+
+
+*** will be looking up by GameName --> is GameName the PK then?
