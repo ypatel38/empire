@@ -19,10 +19,6 @@ class CreateGameHandler {
       .then(
         this.Game.findAll({ where: {GameName: roomName} })
       .then((fa_res) => {
-        console.log(fa_res)
-        console.log('found gameName? ',fa_res.length)
-        console.log('then 2 this', this)
-
         // if gameName already exists, send error code
         if (fa_res.length > 0) {
           res.status(500).send('This room name is already is use.')

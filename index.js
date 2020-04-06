@@ -70,7 +70,7 @@ const JoinGameHandler = require('./api/joinGameHandler.js')
 const homeHandler = new HomeHandler(__dirname)
 const gameHandler = new GameHandler(__dirname)
 const createGameHandler = new CreateGameHandler(sequelize, uuid, Game, Player)
-const joinGameHandler = new JoinGameHandler()
+const joinGameHandler = new JoinGameHandler(sequelize, uuid, Game, Player)
 
 server.listen(port, () => console.log('Listening on port ', port))
 
