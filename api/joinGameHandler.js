@@ -33,7 +33,7 @@ class JoinGameHandler {
                 res.status(500).send('This username already exists in this game.')
               }
               else{
-                // add this player to Player table
+                // add player to Player table
                 let playerId = this.createUUID()
 
                 this.sequelize.sync().then(
@@ -52,53 +52,18 @@ class JoinGameHandler {
                     NumPlayers: this.sequelize.literal('NumPlayers + 1')
                   }, {where: {GameName: roomName} })
                 )
-
-
+                
                 res.status(200).send({ gameId: roomName })
 
               }
             }
             )
-
-            // res.status(200).send({ gameId: roomName })
           }
-          
-
-          
-
-
         }
       }
-
       )
       )
-
-
   }
 }
   
 module.exports = JoinGameHandler
-
-
-
-/*
-
-          // check if playerName already exists for gameName
-          this.Player.findAll({ where: {GameName: roomName, PlayerName: userName} })
-            .then( (fa_player) => {
-              if (fa_player.length > 0) {
-                res.status(500).send('This username already exists in this game.')
-              }
-              else{
-                // check if password is correct
-
-                // add this player to Player table
-                console.log('player name is unique for this game')
-                // update numPlayers in Game table
-
-                res.status(200).send({ gameId: roomName })
-
-              }
-            }
-            )
-*/
