@@ -4,7 +4,8 @@ const port = parseInt(process.env.PORT, 10) || 8080;
 
 const server = require('http').createServer(app)
 const io = require('socket.io')(server)
-const bodyParser = require('body-parser');
+const bodyParser = require('body-parser')
+const uuid = require('uuid').v4
 
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const sequelize = new Sequelize({
@@ -16,14 +17,14 @@ const sequelize = new Sequelize({
 
 // define models
 const Game = sequelize.define('game', {
-  GameName: { 
-    type: Sequelize.STRING, 
+  GameName: {
+    type: Sequelize.STRING,
     allowNull: false,
     unique: true
-  }, 
+  },
   GamePassword: Sequelize.STRING,
   GamePhase: {
-    type: Sequelize.INTEGER, 
+    type: Sequelize.INTEGER,
     defaultValue: 0
   },
   TurnNumber: {
@@ -46,22 +47,20 @@ const Player = sequelize.define('player', {
     unique: true
   },
   PlayerName: {
-    type: Sequelize.STRING, 
+    type: Sequelize.STRING,
     allowNull: false,
-  }, 
+  },
   GameName: {
-    type: Sequelize.STRING, 
+    type: Sequelize.STRING,
     allowNull: false
   },
   TeamNumber: Sequelize.INTEGER,
-  isLeader: Sequelize.BOOLEAN, 
+  isLeader: Sequelize.BOOLEAN,
 });
 
 sequelize.sync()
 
-
 // const Db = require('./database.js') // this guy isnt doing anything for now
-
 
 const HomeHandler = require('./api/homeHandler.js')
 const GameHandler = require('./api/gameHandler.js')
@@ -70,7 +69,7 @@ const JoinGameHandler = require('./api/joinGameHandler.js')
 
 const homeHandler = new HomeHandler(__dirname)
 const gameHandler = new GameHandler(__dirname)
-const createGameHandler = new CreateGameHandler(sequelize, Sequelize, Game, Player)
+const createGameHandler = new CreateGameHandler(sequelize, uuid, Game, Player)
 const joinGameHandler = new JoinGameHandler()
 
 server.listen(port, () => console.log('Listening on port ', port))
@@ -78,7 +77,6 @@ server.listen(port, () => console.log('Listening on port ', port))
 // support parsing of application/json type post data
 app.use(bodyParser.json());
 app.use('/assets', express.static(__dirname + '/assets'))
-// app.use('/static', express.static('node_modules'));
 
 app.get('/', homeHandler.home.bind(homeHandler))
 app.get('/:game', gameHandler.game.bind(gameHandler))
@@ -99,7 +97,3 @@ io.on('connection', (socket) => {
     { 'user': 'Server', 'message': socket.username + ' has joined!'})
   })
 })
-
-
-
-
