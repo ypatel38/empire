@@ -35,18 +35,8 @@ const Game = sequelize.define('game', {
     defaultValue: 1
   },
   NumEmpires: Sequelize.INTEGER,
-  HostPlayerId: Sequelize.STRING
+  HostPlayerId: Sequelize.UUID
 });
-
-// //add to Game table
-// sequelize.sync().then(function () {
-//   Game.create({
-//     GameName: 'game0',
-//     GamePassword: 'pass'
-//   })
-// })
-
-
 // sequelize.sync()
 
 const Player = sequelize.define('player', {
@@ -67,21 +57,10 @@ const Player = sequelize.define('player', {
   isLeader: Sequelize.BOOLEAN, 
 });
 
-// sequelize.sync()
-
-// // add to Players table
-// sequelize.sync().then(function () {
-//   Player.create({
-//     PlayerId: 'd244445c-4252-4531-979d-82195e0e48ed',
-//     PlayerName: 'hiran',
-//     GameName: 'game0', 
-//     TeamNumber: 0,
-//     isLeader: true
-//   })
-// }) 
+sequelize.sync()
 
 
-// const Db = require('./database.js') // this guy isnt doing anything
+// const Db = require('./database.js') // this guy isnt doing anything for now
 
 
 const HomeHandler = require('./api/homeHandler.js')
