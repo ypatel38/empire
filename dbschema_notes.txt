@@ -1,26 +1,78 @@
-Game:
-Id: varchar
-StartTime: utc time/string
-Turn Number: Int
-Num Players: Int
-Num Empires: Int  (reduce when someone joins another team)
-HostPlayer ID: varchar (UUID)
-Password: varchar
-name: varchar
-gamePhase: varchar (waiting for players, deciding topic, submitting answers, actual game)
+Game: 
+GameId: Int (*PRIMARY*)
+StartTime: varchar -(convert to)->utc time/string  ** does this automatically
+TurnNumber: Int
+NumPlayers: Int
+NumEmpires: Int  (reduce when someone joins another team)
+HostPlayerId: varchar (UUID)
+GamePassword: varchar
+GameName: varchar PRIMARY
+GamePhase: Int (0: waiting for players, 1: reading answers, 2: end_game)
 
 
 Game<->Player:
-Id: varcahr
-PlayerID: varchar (UUID)
+GameId: Int
+PlayerId: varchar (UUID)
 
 Player:
-TeamNumber: int
-isLeader: boolean
-name: varchar
-value: varchar
-playerId: varchar (UUID)
+PlayerId: varchar (UUID) PRIMARY
+GameId: Int FOREIGN **we will only be searching by GameName**
+TeamNumber: int 
+isLeader: INTEGER (0: false, 1: true)
+PlayerName: varchar
+
 
 
 to get current turn get all players that are leaders and sort by team number; index that array witht he turn number
 Increment the turn number by getting the length of the number of leaders
+
+// to init database
+// //add to Game table
+// sequelize.sync().then(function () {
+//   Game.create({
+//     GameName: 'game0',
+//     GamePassword: 'pass'
+//   })
+// })
+// sequelize.sync().then(function () {
+//   Game.create({
+//     GameName: 'game1',
+//     GamePassword: 'pass'
+//   })
+// })
+// // add to Player table
+// sequelize.sync().then(function () {
+//   Player.create({
+//     PlayerId: 'd244445c-4252-4531-979d-82195e0e48ed',
+//     PlayerName: 'hiran',
+//     GameName: 'game0', 
+//     TeamNumber: 0,
+//     isLeader: true
+//   })
+// })
+
+
+    // TOY CASES:
+    // console.log(this.Game.length)
+    // this.sequelize.sync().then(
+    //   this.Game.findAll().then(function(game) {
+    //     console.log('find all len: ',game.length)
+    //   })
+    // );
+    // //add to Game table
+    // this.sequelize.sync().then(
+    //   this.Game.create({
+    //     GameName: 'game1',
+    //     GamePassword: 'password'
+    //   })
+    // );
+    // // add to Players table
+    // sequelize.sync().then(function () {
+    //   this.Player.create({
+    //     PlayerId: 'd244445c-4252-4531-979d-82195e0e48ed',
+    //     PlayerName: 'hiran',
+    //     GameName: 'game0', 
+    //     TeamNumber: 0,
+    //     isLeader: true
+    //   })
+    // }) 
