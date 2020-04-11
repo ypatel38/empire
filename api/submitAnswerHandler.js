@@ -40,7 +40,7 @@ class SubmitAnswerHandler {
       )
     );
 
-    // check if numAnswers is equal to numplayers (means everyone answered)
+    // check if numAnswers is equal to numPlayers (means everyone answered)
     this.sequelize.sync().then(
       this.Game.findAll({
         where: {
@@ -48,7 +48,21 @@ class SubmitAnswerHandler {
         }
       }).then(fa_res => {
         if (fa_res[0].NumAnswers == fa_res[0].NumPlayers) {
-          res.status(200).send("All players have submitted an answer");
+          // res.status(200).send("All players have submitted an answer");  // TODO: change gamePhase at this point or in the next step
+          
+          // send array of answers
+          // TODO: TEST THIS QUERY
+          this.sequelize.sync().then(
+            this.Player.findAll({
+              attributes: ['Answer'],
+              where: {
+                GameName: roomName
+              }
+            }).then(all_answers =>{
+              res.send(200).json(all_answers)
+            })
+          )
+
         }
       })
     );
