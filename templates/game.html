@@ -62,30 +62,31 @@
                 Waiting for host to start the game <v-icon class="ml-2" color="secondary">fas fa-spinner fa-spin</v-icon>
               </div>
             </div>
+            <div v-else-if="myAnswer !== ''">
+              <div class="text-center mb-8">Submitted Answer: <strong>{{ myAnswer }}</strong></div>
+              <div class="secondary--text text-center font-weight-bold mb-6">
+                Waiting for everyone else to submit their answers <v-icon class="ml-2" color="secondary">fas fa-spinner fa-spin</v-icon>
+              </div>
+            </div>
             <div v-else>
-              <v-text-field
-                class="mt-6"
-                v-model="myAnswerTemp"
-                :append-icon="myAnswerTemp !== '' ? 'mdi-location-enter' : ''"
-                label="Enter an answer..."
-                outlined
-                @click:append="dialog = true"
-              ></v-text-field>
+              <v-text-field class="mt-6" v-model="myAnswerTemp" :append-icon="myAnswerTemp !== '' ? 'mdi-location-enter' : ''"
+                label="Enter an answer..." outlined @click:append="dialog = true"></v-text-field>
               <v-dialog v-model="dialog" max-width="290">
                 <v-card>
-                  <v-card-text class="pt-5 secondary--text body-1">Are you sure you would like to submit the following answer?</v-card-title>
-                  <v-card-text class="headline text-center">
-                    {{ myAnswerTemp }}
-                  </v-card-text>
-                  <v-card-actions>
-                    <v-btn color="secondary" text @click="dialog = false">
-                      Cancel
-                    </v-btn>
-                    <v-spacer></v-spacer>
-                    <v-btn color="primary" text @click="submitAnswer">
-                      Submit
-                    </v-btn>
-                  </v-card-actions>
+                  <v-card-text class="pt-5 secondary--text body-1">Are you sure you would like to submit the following answer?
+                    </v-card-title>
+                    <v-card-text class="headline text-center">
+                      {{ myAnswerTemp }}
+                    </v-card-text>
+                    <v-card-actions>
+                      <v-btn color="secondary" text @click="dialog = false">
+                        Cancel
+                      </v-btn>
+                      <v-spacer></v-spacer>
+                      <v-btn color="primary" text @click="submitAnswer">
+                        Submit
+                      </v-btn>
+                    </v-card-actions>
                 </v-card>
               </v-dialog>
             </div>
