@@ -56,9 +56,38 @@
             </div>
           </div>
           <div v-if="topic !== ''" class="d-flex justify-center">
-            <v-btn v-if="isHost" color="secondary" class="text-center">Start Game</v-btn>
-            <div v-else class="secondary--text text-center font-weight-bold mb-6">
-              Waiting for host to start the game <v-icon class="ml-2" color="secondary">fas fa-spinner fa-spin</v-icon>
+            <div v-if="allAnswersEntered">
+              <v-btn v-if="isHost" color="secondary" class="text-center">Start Game</v-btn>
+              <div v-else class="secondary--text text-center font-weight-bold mb-6">
+                Waiting for host to start the game <v-icon class="ml-2" color="secondary">fas fa-spinner fa-spin</v-icon>
+              </div>
+            </div>
+            <div v-else>
+              <v-text-field
+                class="mt-6"
+                v-model="myAnswerTemp"
+                :append-icon="myAnswerTemp !== '' ? 'mdi-location-enter' : ''"
+                label="Enter an answer..."
+                outlined
+                @click:append="dialog = true"
+              ></v-text-field>
+              <v-dialog v-model="dialog" max-width="290">
+                <v-card>
+                  <v-card-text class="pt-5 secondary--text body-1">Are you sure you would like to submit the following answer?</v-card-title>
+                  <v-card-text class="headline text-center">
+                    {{ myAnswerTemp }}
+                  </v-card-text>
+                  <v-card-actions>
+                    <v-btn color="secondary" text @click="dialog = false">
+                      Cancel
+                    </v-btn>
+                    <v-spacer></v-spacer>
+                    <v-btn color="primary" text @click="submitAnswer">
+                      Submit
+                    </v-btn>
+                  </v-card-actions>
+                </v-card>
+              </v-dialog>
             </div>
           </div>
         </div>
@@ -156,7 +185,10 @@
           ],
           answers: [],
           currentDisplayedIndex: 1,
-          currentDisplayedAnswer: ''
+          currentDisplayedAnswer: '',
+          myAnswerTemp: '',
+          dialog: false,
+          allAnswersEntered: false
         },
         computed: {
           getCookie() {
