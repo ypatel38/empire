@@ -7,7 +7,6 @@ class CreateGameHandler {
   }
 
   createGame(req, res) {
-    console.log("test", this.createUUID());
     const userName = req.body.userName;
     const roomName = req.body.room;
     const roomPassword = req.body.password;
