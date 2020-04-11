@@ -36,7 +36,12 @@ const Game = sequelize.define("game", {
     defaultValue: 1
   },
   NumEmpires: Sequelize.INTEGER,
-  HostPlayerId: Sequelize.UUID
+  HostPlayerId: Sequelize.UUID, 
+  // Question: Sequelize.STRING, 
+  NumAnswers: {
+    type: Sequelize.INTEGER,
+    defaultValue: 0
+  }
 });
 // sequelize.sync()
 
@@ -67,24 +72,26 @@ const HomeHandler = require("./api/homeHandler.js");
 const GameHandler = require("./api/gameHandler.js");
 const CreateGameHandler = require("./api/createGameHandler.js");
 const JoinGameHandler = require("./api/joinGameHandler.js");
+// const AskQuestionHandler = require("./api/askQuestionHandler.js");
+// const SubmitAnswerHandler = require("./api/submitAnswerHandler.js");
 
 const homeHandler = new HomeHandler(__dirname);
 const gameHandler = new GameHandler(__dirname);
 const createGameHandler = new CreateGameHandler(sequelize, uuid, Game, Player);
 const joinGameHandler = new JoinGameHandler(sequelize, uuid, Game, Player);
+// const askQuestionHandler = new AskQuestionHandler(sequelize, uuid, Game, Player);
+// const submitAnswerHandler = new SubmitAnswerHandler(sequelize, uuid, Game, Player);
 
 server.listen(port, () => console.log("Listening on port ", port));
 
 // support parsing of application/json type post data
+// TODO: bind question/answer stuff here too
 app.use(bodyParser.json());
 app.use("/assets", express.static(__dirname + "/assets"));
 
 app.get("/", homeHandler.home.bind(homeHandler));
 app.get("/:game", gameHandler.game.bind(gameHandler));
-app.post(
-  "/api/create-game",
-  createGameHandler.createGame.bind(createGameHandler)
-);
+app.post("/api/create-game", createGameHandler.createGame.bind(createGameHandler));
 app.post("/api/join-game", joinGameHandler.joinGame.bind(joinGameHandler));
 app.get("/api/get-game-state", gameHandler.getGameState.bind(gameHandler));
 
