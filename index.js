@@ -37,7 +37,7 @@ const Game = sequelize.define("game", {
   },
   NumEmpires: Sequelize.INTEGER,
   HostPlayerId: Sequelize.UUID, 
-  // Question: Sequelize.STRING, 
+  Question: Sequelize.STRING, 
   NumAnswers: {
     type: Sequelize.INTEGER,
     defaultValue: 0

@@ -53,6 +53,6 @@ class SubmitAnswerHandler {
       })
     );
 
-    res.status(200).send({ answer: answer }); // not sure what you want me to return
+    res.status(200).send({ answer: answer }); // not sure what needs to be returned
   }
 }
