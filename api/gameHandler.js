@@ -9,7 +9,7 @@ class GameHandler {
 
   getGameState(_req, res) {
     const data = {
-      gameState: GAME_STATES[1],
+      gameState: GAME_STATES[0],
       topic: 'Some Topic',
       players: [
         {
@@ -21,8 +21,9 @@ class GameHandler {
       myName: 'Jesus',
       roomName: 'hello3',
       roomPassword: '123casdw',
-      isHost: true,
-      myAnswer: 'My asdawxca'
+      isHost: false,
+      myAnswer: 'My asdawxca',
+      allAnswersEntered: false
     }
 
     res.status(200).send(data)
