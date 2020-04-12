@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 class SubmitAnswerHandler {
   constructor(sequelize, uuid, Game, Player) {
     this.sequelize = sequelize;
@@ -49,20 +50,19 @@ class SubmitAnswerHandler {
       }).then(fa_res => {
         if (fa_res[0].NumAnswers == fa_res[0].NumPlayers) {
           // res.status(200).send("All players have submitted an answer");  // TODO: change gamePhase at this point or in the next step
-          
+
           // send array of answers
           // TODO: TEST THIS QUERY
           this.sequelize.sync().then(
             this.Player.findAll({
-              attributes: ['Answer'],
+              attributes: ["Answer"],
               where: {
                 GameName: roomName
               }
-            }).then(all_answers =>{
-              res.send(200).json(all_answers)
+            }).then(all_answers => {
+              res.send(200).json(all_answers);
             })
-          )
-
+          );
         }
       })
     );

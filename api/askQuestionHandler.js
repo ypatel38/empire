@@ -1,14 +1,15 @@
+// eslint-disable-next-line no-unused-vars
 class AskQuestionHandler {
   constructor(sequelize, uuid, Game, Player) {
-    this.sequelize = sequelize;
-    this.Game = Game;
-    this.Player = Player;
-    this.createUUID = () => uuid();
+    this.sequelize = sequelize
+    this.Game = Game
+    this.Player = Player
+    this.createUUID = () => uuid()
   }
 
   askQuestion(req, res) {
-    const roomName = req.body.room;
-    const question = req.body.question;
+    const roomName = req.body.room
+    const question = req.body.question
 
     // store question in Game table
     this.sequelize.sync().then(
@@ -22,8 +23,8 @@ class AskQuestionHandler {
           }
         }
       )
-    );
+    )
 
-    res.status(200).send({ question: question });  // not sure what needs to be returned
+    res.status(200).send({ question: question })  // not sure what needs to be returned
   }
 }

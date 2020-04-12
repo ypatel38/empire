@@ -1,15 +1,16 @@
+// eslint-disable-next-line no-unused-vars
 class GuessAnswerHandler {
   constructor(sequelize, uuid, Game, Player) {
-    this.sequelize = sequelize;
-    this.Game = Game;
-    this.Player = Player;
-    this.createUUID = () => uuid();
+    this.sequelize = sequelize
+    this.Game = Game
+    this.Player = Player
+    this.createUUID = () => uuid()
   }
 
   guessAnswer(req, res) {
-    const roomName = req.body.room;
-    const answer = req.bosy.answer; // answer that the user guessed
-    const userName = req.body.userName; // userName that the user guessed
+    const roomName = req.body.room
+    const answer = req.bosy.answer // answer that the user guessed
+    const userName = req.body.userName // userName that the user guessed
 
     // check if answer is linked to the player
     this.sequelize.sync().then(
@@ -20,11 +21,11 @@ class GuessAnswerHandler {
         }
       }).then(fa_res => {
         if (fa_res[0].Answer == answer) {
-          res.send(200).send("Player guessed correctly");  // TODO: update numEmpires here and check if game is over
+          res.send(200).send('Player guessed correctly') // TODO: update numEmpires here and check if game is over
         }
       })
-    );
+    )
 
-    res.send(200).send("Player guessed incorrectly");
+    res.send(200).send('Player guessed incorrectly')
   }
 }
